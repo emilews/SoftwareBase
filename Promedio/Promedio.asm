@@ -6,7 +6,7 @@
 
 segment .bss
 	arreglo_enteros  resb 200         ;50 casillas de 4 bytes c/u
-	elementos resb 4				  ;numero de elementos
+	sum resb 4				  		  ;Resultado de la suma
 
 section .text
 	global _start:
@@ -20,7 +20,6 @@ _start:
     ;BLOQUE de INICIALIZACION
 	pop eax			;obtenemos nombre de programa
 	dec ecx			;restamos 1 al numero de argumentos
-	mov elementos, ecx
 	mov edx, 0		;ponemos en 0 EDX
 	mov esi,arreglo_enteros   ;la direccion de 'arreglo_enteros' a ESI
 
@@ -35,21 +34,24 @@ ciclo:
 	jne ciclo 				;ciclar en caso de que si existan argumentos
 
     ;CICLO DE IMPRESION
-ciclo_impresion:
-	mov ebx, [esi+edx*4]
-	dec edx
-	add eax,ebx
-	cmp ecx, edx
-	je imprimir
-	jne ciclo_impresion
-
-
 ciclo_suma:
+ 	dec edx					;Restamos 1 a edx, por que estamos un número adelantado al del array
+	mov ebx, [esi+edx*4]	;Buscamos el valor en memoria y pasamos a ebx
+	add ecx,ebx				;Sumamos los registros de ecx (en 0) con el de ebx (con el valor en memoria)
+	mov [sum], ecx			;Movemos la suma al registro dinámico en [sum]
+	cmp edx, 0				;Comparamos para ver si nuestro contador llega a 0
+	jne ciclo_suma
+
+
+ciclo_impresion:
+
+
+
+imprimir:
+	mov eax, [sum]
+	call iprintLF
 
     ;SALIDA
 salir:
 	jmp quit
 
-imprimir:
-	call iprintLF
-	call salir
