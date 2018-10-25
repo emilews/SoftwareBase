@@ -38,22 +38,35 @@ ciclo:
 	mov edi,[num]
 
 		;CICLO SUMA
-ciclo_suma:
+ciclo_cuadrado:
 	dec edi		;decrementar cantidad n de elementos en el array
 	mov ebx,[esi+edi*4]	;poner en memoria ebx el contenido del arreglo
 	mov eax,ebx		;mover numero eax
-	call iprintLF	;imprimir numero
-	add ecx,ebx	;sumar ecx (inicial en 0) con el valor ebx
-	mov [sum],ecx	;mover acumulador a memoria
+	mul eax
+    inc ecx
+    call iprintLF
+    add [sum], eax
 	cmp edi,0			;preguntamos si ya no tenemos argumentos
-	jne ciclo_suma				;ciclar en caso de que siga habiendo elementos en el arreglo
+	jne ciclo_cuadrado				;ciclar en caso de que siga habiendo elementos en el arreglo
 
-promedio:
-	mov edx,0
-	mov eax,[sum]	;dividendo
-	mov edi,[num]	;divisor
-	div edi	;envias divisor
-	call iprintLF
+
+ciclo_suma:
+    mov eax, [sum]
+    div ecx
+    call iprintLF
+
+ciclo_perimetro:
+    dec ecx		;decrementar cantidad n de elementos en el array
+	mov ebx,[esi+ecx*4]	;poner en memoria ebx el contenido del arreglo
+	mov eax,ebx		;mover numero eax
+	imul eax, 4
+    inc edx
+    call iprintLF
+	cmp ecx,0			;preguntamos si ya no tenemos argumentos
+	jne ciclo_perimetro				;ciclar en caso de que siga habiendo elementos en el arreglo
+
+
+
 
     ;SALIDA
 salir:
