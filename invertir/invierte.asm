@@ -17,15 +17,28 @@ _start:
    mov edx, ecx
    mov esi, cadena_destino
    pop eax
+   mov edx, 0
 
 ciclo:
     pop eax
-    mov ecx,eax
-    push byte[ecx]
-    call sprintLF
-    dec edx
-    cmp edx, 1
+    mov bl, byte[eax]
+    push ebx
+    inc eax
+    inc edx
+    cmp eax, 0
     jne ciclo
+
+
+ SecondCicle:
+    cmp edx,0
+    je salir
+    pop eax
+    call sprint
+    jmp SecondCicle
+
+dec ecx
+cmp ecx, 1
+jne ciclo
 
 
 salir:
