@@ -23,7 +23,7 @@ _start:
     ;abrimos archivoy leemos
     pop ebx             ;nombre de archivo
     mov esi, buffer     ;direccion del buffer a esi
-    mov edx, len        ; longitud del buffer
+    mov edx, len        ;longitud del buffer
     call leer_archivo   ;leer el file
 
     ;imprime buffer
