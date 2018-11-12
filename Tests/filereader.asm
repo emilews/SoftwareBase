@@ -5,11 +5,12 @@
 
 
 section .data
-  file db "laluna.txt",0 ;filename ends with '\0' byte
+  ;file db "laluna.txt",0 ;filename ends with '\0' byte
 section .bss
   descriptor resb 4 ;memory for storing descriptor
   buffer resb 1024
   len equ 1024
+  file resb 1024
 section .start
 global _start
 _start:
@@ -17,7 +18,7 @@ _start:
   pop eax  
   pop eax
   pop eax
-  call sprintLF
+  mov file, eax
 
   mov eax,5 ;open
   mov ebx,file ;filename

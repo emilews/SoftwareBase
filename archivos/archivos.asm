@@ -6,8 +6,8 @@
 section .data
 
 segment .bss
-    buffer  resb 1024
-    len     equ  1024
+    buffer  resb 8192
+    len     equ  8192
     file    resb   30
     filelen resb    4
 
@@ -28,7 +28,7 @@ _start:
 
     ;imprime buffer
     mov eax, buffer
-    call sprintLF
+    call sprint
 
 
     jmp quit

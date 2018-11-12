@@ -152,7 +152,7 @@ iprintLF:
 leer_archivo:
     mov eax, sys_open
     mov ecx, O_RDONLY
-    int 0x80
+    int 80h
     cmp eax, 0
     jle .error
 
@@ -160,12 +160,15 @@ leer_archivo:
     mov ebx, eax
     mov eax, sys_read
     mov ecx, esi
+    int 80h
+    call sprintLF
+
 
     ;cerrar leer_archivo
     mov eax, sys_close
-    int 0x80
+    int 80h
 
 .error:
     mov ebx, eax
     mov eax, sys_exit
-    int 0x80
+    int 80h
