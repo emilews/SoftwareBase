@@ -13,3 +13,7 @@ stdout          equ     1       ;salida estandar (pantalla)
 stderr          equ     3       ;salida de error estandar
 O_RDONLY        equ     0       ;open for read only
 O_RDWR          equ     1       ;open for read and write
+
+
+
+;Cifrado

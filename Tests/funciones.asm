@@ -69,8 +69,7 @@ atoi:
     mov eax,0   ;inicializamos a cero eax
     mov ecx,0  ; inicializamos a cero ecx
 
-    ciclomult:    ; ciclo multiplicacion
-
+ciclomult:    ; ciclo multiplicacion
     xor ebx,ebx   ; resetteamos a 0 ebx, tanto  bh como bl
     mov bl,[esi+ecx]     ; movemos un solo byte a ala parte baja de ebx
     cmp bl, 48          ; comparamos con ascii ´0´
@@ -88,8 +87,7 @@ atoi:
     inc ecx    ; incrementamos ecx (conttador)
     jmp ciclomult ; seguimos nuestro ciclo de multiplicacion
 
-    finalizado:
-
+finalizado:
     mov ebx,10 ; movemos el valor decimal 10 a ebx
     div ebx ; dividimos eax entre 10
     pop esi ; re-establecemos esi
@@ -152,20 +150,95 @@ iprintLF:
 leer_archivo:
     mov eax, sys_open
     mov ecx, O_RDONLY
-    int 0x80
-    cmp eax, 0
-    jle .error
+    int 80h
+ 
 
     ;lee el archivo
     mov ebx, eax
     mov eax, sys_read
     mov ecx, esi
+    int 80h
+    
+
 
     ;cerrar leer_archivo
     mov eax, sys_close
-    int 0x80
+    int 80h
 
 .error:
     mov ebx, eax
     mov eax, sys_exit
+    int 80h
+
+
+
+keyArray:
+    push ecx                ;guardamos ecx
+    push ebx                ;guardamos ebx
+    mov ecx, 0              ;inicializamos ecx
+    mov ebx, 0              ;inicializamos ebx
+.sigcar:
+    mov bl,byte[eax]        ;movemos un byte desde eax
+    mov byte[esi+ecx], bl   ;guardamos en memoria la posicion
+    cmp byte[eax], 0
+    jz .finalizar
+    inc eax
+    inc ecx
+    jmp .sigcar             ;vuelta
+.finalizar:
+    pop ebx
+    pop ecx
+    ret
+
+
+
+encrypt:
+    push ecx                ;guardamos ecx
+    push ebx                ;guardamos ebx
+    mov ecx, 0              ;inicializamos ecx
+    mov ebx, 0              ;inicializamos ebx
+.sigcar:
+    mov bl,byte[eax]        ;movemos un byte desde eax
+    mov byte[esi+ecx], bl   ;guardamos en memoria la posicion
+    cmp byte[eax], 0
+    jz .finalizar
+    inc eax
+    inc ecx
+    jmp .sigcar             ;vuelta
+.finalizar:
+    pop ebx
+    pop ecx
+    ret
+
+
+
+decrypt:
+    push ecx                ;guardamos ecx
+    push ebx                ;guardamos ebx
+    mov ecx, 0              ;inicializamos ecx
+    mov ebx, 0              ;inicializamos ebx
+.sigcar:
+    mov bl,byte[eax]        ;movemos un byte desde eax
+    
+
+
+
+
+
+
+    mov byte[esi+ecx], bl   ;guardamos en memoria la posicion
+    cmp byte[eax], 0
+    jz .finalizar
+    inc eax
+    inc ecx
+    jmp .sigcar             ;vuelta
+.finalizar:
+    pop ebx
+    pop ecx
+    ret
+
+LeerTexto:
+    mov ebx, stdin
+    mov eax, sys_read
     int 0x80
+    ret
