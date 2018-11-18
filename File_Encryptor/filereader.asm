@@ -1,6 +1,8 @@
 ; Name: Encryptor for Assembly 
 ; Authors: Aileen Palafox, Luis Valdez & Emilio Wong
 ; Date: 14 Nov 2018
+; How to:
+; ./encryptor "texto a cifrar" "archivo_para_guardar.txt"
 
 %include 'constantes.asm'
 %include 'funciones.asm'
@@ -43,8 +45,8 @@ _start:
   ;     character. 
   ;   It is doing the following calculations to get that
   ;   number:
-  ;     e(x) = (x + k) (mod(59))  -> Encryption
-  ;     e(x) = (x - k) (mod(59))  -> Decryption
+  ;     e(x) = (x + k)%59  -> Encryption
+  ;     e(x) = (x - k)%59  -> Decryption
   ;   e(x) is the resulting character 
   ;   x is the number value of the character to enc/dec
   ;   k is the number value of the character of the key
