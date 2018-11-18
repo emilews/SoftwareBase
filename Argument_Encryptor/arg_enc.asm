@@ -9,11 +9,14 @@
 
 
 section .data
+  ;Message for key input
+  key_msg   DB   'Please input a key:',0x0
   ;Message if not enough arguments
-  i_a_msg   DB   'Not enough arguments. Use as follows: ./arg_enc "text to encrypt" "file to save" "key to encrypt"'
+  i_a_msg   DB   'Not enough arguments. Use as follows: ./arg_enc "text to encrypt" "file to save"', 0x0
   ;File name of the dictionary
   cifrado   DB   'cifrado.txt',0x0
-
+  ;Test key
+  t_key   DB   'hola',0x0
 
 section .bss
   dict      resb 59         ;For the dict 
@@ -33,7 +36,18 @@ section .start
 
 
 _start:
-  ;Reading file to encrypt---------------------------
+  ;Asking for key------------------------------------
+  mov eax, key_msg    ;Move msg to eax
+  call sprint         ;Print msg
+  mov ecx, key        ;Where we'll save input
+  mov edx, key_len    ;len buffer
+  mov ebx, stdin      ;Starndar input
+  mov eax, sys_read   ;We read the input
+  int 80h             ;Execute
+  ;--------------------------------------------------
+
+
+  ;Reading cifrado file------------------------------
   mov eax,5           ;open file command
   mov ebx, cifrado
   mov ecx,0           ;read only
@@ -54,7 +68,7 @@ _start:
 
   ;Initializer---------------------------------------
   pop eax             ;Number of arguments
-  cmp eax, 3          ;We compare the arguments with 3
+  cmp eax, 2          ;We compare the arguments with 2
   jl i_a_handler      ;Call to terminate if not enough args 
   pop eax             ;Name of program
   pop eax             ;Argument or text to encrypt
@@ -62,11 +76,6 @@ _start:
   pop eax             ;Name of file to save data onto
   mov edi, eax        ;Move name of new file to edi
   mov esi, filename   ;Data address
-  pop eax             ;Key
-  mov [key], eax      ;We save the key in the key var
-
-
-
   ;--------------------------------------------------
 
   ;GENERAL: 
@@ -86,13 +95,6 @@ _start:
   ;   
   ;   The number values are based on the position of that
   ;   same character on the line at the cifrado txt
-
-
-
-  ;Key calculator------------------------------------
-  ;TO DO: everything to get the values of the chars
-
-  ;--------------------------------------------------
 
   ;Reading character by character--------------------
   mov eax, ebx        ;Move text argument to eax
@@ -119,7 +121,7 @@ _start:
   mov ebx, eax        ;From eax, we use the opened file
   mov eax, sys_write  ;Write mode
   mov ecx, esi        ;What will be written in the file
-  mov edx,            ;The bytes that will be written
+  mov edx, 35        ;The bytes that will be written
   int 80h             ;Execute
   mov eax, sys_sync   ;Sync
   int 80h             ;Execute

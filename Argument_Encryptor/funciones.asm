@@ -6,15 +6,15 @@ strlen:
 
 sigcar:
     cmp byte[EAX],0	;comparamos el byte que esta en la direccion
-			;a la que apunta EAX comn 0 (estamos buscando el caracter de terminacion 0)
+			        ;a la que apunta EAX comn 0 (estamos buscando el caracter de terminacion 0)
     jz finalizar 	;JUMP if Zero, salta a finalizar si es cero
-    inc EAX		;incrementamos en 1 el acumulador
+    inc EAX		    ;incrementamos en 1 el acumulador
     jmp sigcar		;salto incondicional al siguiente caracter
 
 finalizar:
     sub EAX,EBX		;restamos al valor inicial de memoria el valor final de memoria
-    pop EBX		;establecer EBX
-    ret			;regresar al punto en que llamaron a la funcion
+    pop EBX		    ;establecer EBX
+    ret			    ;regresar al punto en que llamaron a la funcion
 
 sprint:
     push EDX		;salvamos valor de EDX
@@ -24,15 +24,15 @@ sprint:
     call strlen 	;llamamos a la funcion strlen
 
     mov EDX,EAX 	;movemos la longitud de cadena a EDX
-    pop EAX		;traemos del stack el valor de EAX
+    pop EAX		    ;traemos del stack el valor de EAX
     mov ECX,EAX 	;la direccion del mensaje a ECx
     mov EBX,1		;descriptor de archivo(stdout)
     mov EAX,4		;sys_write
-    int 80h		;ejecuta
+    int 80h		    ;ejecuta
 
-    pop EBX		;re-establecemos EBX
-    pop ECX		;re-establecemos ECX
-    pop EDX		;re-establecemos EDX
+    pop EBX		    ;re-establecemos EBX
+    pop ECX		    ;re-establecemos ECX
+    pop EDX		    ;re-establecemos EDX
     ret
 
 ;imprime cadenas de texto con una nueva linea (LF o Line Feed)
@@ -44,14 +44,14 @@ sprintLF:
     push EAX		;salvamos el 0xA en el stack
     mov EAX,ESP		;Lo que apunta ESP a EAX
     call sprint		;Imprimimos el LF
-    pop EAX		;Recuperamos el caracter 0xA
-    pop EAX		;Recuperamos el valor original de 0xA
-    ret			;Regresamos
+    pop EAX		    ;Recuperamos el caracter 0xA
+    pop EAX		    ;Recuperamos el valor original de 0xA
+    ret			    ;Regresamos
 
 quit:
 salida:
-  mov ebx, 0          ;codigo de salida
-  mov eax, 1          ;SYT_EXIT
+  mov ebx, 0        ;codigo de salida
+  mov eax, 1        ;SYT_EXIT
   int 0x80
 
 ;------------------------------------------------
@@ -61,86 +61,86 @@ salida:
 ;regresa valor en eax
 ;------------------------------------------------
 atoi:
-    push ebx  ; preservamos ebx
-    push ecx  ; preservamos edx
-    push edx  ; preservamos edx
-    push esi  ; preservamos esi
-    mov  esi,eax ; nuestro numero a convertir va a esi
-    mov eax,0   ;Initialise a cero eax
-    mov ecx,0  ; Initialise a cero ecx
+    push ebx        ;preservamos ebx
+    push ecx        ;preservamos edx
+    push edx        ;preservamos edx
+    push esi        ;preservamos esi
+    mov  esi,eax    ;nuestro numero a convertir va a esi
+    mov eax,0       ;Initialise a cero eax
+    mov ecx,0       ;Initialise a cero ecx
 
-ciclomult:    ; ciclo multiplicacion
-    xor ebx,ebx   ; resetteamos a 0 ebx, tanto  bh como bl
-    mov bl,[esi+ecx]     ; movemos un solo byte a ala parte baja de ebx
-    cmp bl, 48          ; comparamos con ascii ´0´
-    jl  finalizado ; si es menor , saltamos a finalizado.
-    cmp bl,57     ; comparamos con ascci "9"
-    jg  finalizado ; si es mayor, saltamos a finalizado
-    cmp bl, 10   ; comparamos con linefeed
-    je  finalizado ; si es igual, saltamos a finalizado
-    cmp bl, 0    ; comparamos con caracter null ](fin de caneda)
-    jz finalizado ; si es cero saltamos a finalizado
-    sub bl,48     ;convertimos el caracter en entero
-    add eax,ebx ; agreagamos el valor a eax
-    mov ebx,10 ; movemos el decimal 10 a ebx
-    mul ebx  ; multiplicamos eax por ebc para obtener el lugar decimal
-    inc ecx    ; incrementamos ecx (conttador)
-    jmp ciclomult ; seguimos nuestro ciclo de multiplicacion
+ciclomult:              ;ciclo multiplicacion
+    xor ebx,ebx         ;resetteamos a 0 ebx, tanto  bh como bl
+    mov bl,[esi+ecx]    ;movemos un solo byte a ala parte baja de ebx
+    cmp bl, 48          ;comparamos con ascii ´0´
+    jl  finalizado      ;si es menor , saltamos a finalizado.
+    cmp bl,57           ;comparamos con ascci "9"
+    jg  finalizado      ;si es mayor, saltamos a finalizado
+    cmp bl, 10          ;comparamos con linefeed
+    je  finalizado      ;si es igual, saltamos a finalizado
+    cmp bl, 0           ;comparamos con caracter null ](fin de caneda)
+    jz finalizado       ;si es cero saltamos a finalizado
+    sub bl,48           ;convertimos el caracter en entero
+    add eax,ebx         ;agreagamos el valor a eax
+    mov ebx,10          ;movemos el decimal 10 a ebx
+    mul ebx             ;multiplicamos eax por ebc para obtener el lugar decimal
+    inc ecx             ;incrementamos ecx (conttador)
+    jmp ciclomult       ;seguimos nuestro ciclo de multiplicacion
 
 finalizado:
-    mov ebx,10 ; movemos el valor decimal 10 a ebx
-    div ebx ; dividimos eax entre 10
-    pop esi ; re-establecemos esi
-    pop edx    ; re-establecemos edx
-    pop ecx  ; re-establecemos ecx
-    pop ebx ; re-establecemos ebx
+    mov ebx,10      ;movemos el valor decimal 10 a ebx
+    div ebx         ;dividimos eax entre 10
+    pop esi         ;re-establecemos esi
+    pop edx         ;re-establecemos edx
+    pop ecx         ;re-establecemos ecx
+    pop ebx         ;re-establecemos ebx
     ret
-; funcion iprint (integer print ) o impresion de enteros
+;funcion iprint (integer print ) o impresion de enteros
 iprint:
-	push eax ; salvamos eax en el stack (acumulador)
-	push ecx ; salvamos ecx en el stack (contador)
-    push edx ; salvamos edx en el stack 	(base)
-	push esi ; salvamos esi en el stack ( source index)
-	mov ecx,0 ; vamos a contar cuantos bytes necesitamos imprimir
+	push eax        ;salvamos eax en el stack (acumulador)
+	push ecx        ;salvamos ecx en el stack (contador)
+    push edx        ;salvamos edx en el stack 	(base)
+	push esi        ;salvamos esi en el stack ( source index)
+	mov ecx,0       ;vamos a contar cuantos bytes necesitamos imprimir
 
 dividirLoop:
 
-	inc ecx      ; incrementamos en 1 ecx
-	mov edx,0    ; limpiamos edx
-	mov esi,10   ; Saving 10 en esi , vamos a divir entre 10
-	idiv esi     ;divide eax entre esi
-	add edx , 48   ; agregamos el caracter 48 '0'
-	push edx          ;la representacion de ascii de nuestro numero
-	cmp eax,0    ; se puede dividir mas el numero entero ?
-	jnz dividirLoop   ; jum if not zero (salta si no es cero)
+	inc ecx             ;incrementamos en 1 ecx
+	mov edx,0           ;limpiamos edx
+	mov esi,10          ;Saving 10 en esi , vamos a divir entre 10
+	idiv esi            ;divide eax entre esi
+	add edx , 48        ;agregamos el caracter 48 '0'
+	push edx            ;la representacion de ascii de nuestro numero
+	cmp eax,0           ;se puede dividir mas el numero entero ?
+	jnz dividirLoop     ;jum if not zero (salta si no es cero)
 
 imprimirloop:
 
-	dec ecx     ; vamos a contar hacia abajo cada byte en el stack
-	mov eax,esp ; apuntador del stack a eax
-	call sprint ;llamamos ala funcion sprint
-	pop eax      ; removemos el ultimo caracter del stack
-	cmp ecx ,0   ; ya imprimos todos los bytes del stack ?
-	jnz imprimirloop   ; todabia hay numeros que imprimir ?
+	dec ecx             ;vamos a contar hacia abajo cada byte en el stack
+	mov eax,esp         ;apuntador del stack a eax
+	call sprint         ;llamamos ala funcion sprint
+	pop eax             ;removemos el ultimo caracter del stack
+	cmp ecx ,0          ;ya imprimos todos los bytes del stack ?
+	jnz imprimirloop    ;todabia hay numeros que imprimir ?
 
-	pop esi ; re - estabnlecemos el valor de esi
-	pop edx    ; re-establecemos el valor de edx
-	pop ecx ; re-establecemos el valor de ecx
-	pop eax   ; re-establecemos el valor de eax
-	ret ; regresamos
+	pop esi         ;re - estabnlecemos el valor de esi
+	pop edx         ;re-establecemos el valor de edx
+	pop ecx         ;re-establecemos el valor de ecx
+	pop eax         ;re-establecemos el valor de eax
+	ret             ;regresamos
 
 ; funcion iprintlf (integer print ) o impresion de enteros con line feed
 iprintLF:
-    call iprint ;imprimimo el numeros
-    push eax   ;salvamos el dato que traemos en el acumulador
+    call iprint     ;imprimimo el numeros
+    push eax        ;salvamos el dato que traemos en el acumulador
 
-    mov eax,0xA ; copiamos el line feed a eax
-    push eax ; salvamos el line feed en el stack
-    mov eax, esp ; copiamos el apuntador del stack a eax  estamos apuntando a una direccion de memoria
-    call sprint   ; imiprimos el line feed
-	pop EAX		;remomovemos el linefeed del stack
-    pop EAX		;re-establecemos el dato que traiamos en eax
-    ret			;Regresamos
+    mov eax,0xA     ;copiamos el line feed a eax
+    push eax        ;salvamos el line feed en el stack
+    mov eax, esp    ;copiamos el apuntador del stack a eax  estamos apuntando a una direccion de memoria
+    call sprint     ;imiprimos el line feed
+	pop EAX		    ;remomovemos el linefeed del stack
+    pop EAX		    ;re-establecemos el dato que traiamos en eax
+    ret			    ;Regresamos
 
 
 ;funcion leer_archivo
@@ -178,20 +178,54 @@ encrypt:
     push ecx                ;Saving ecx
     push ebx                ;Saving ebx
     push esp                ;Saving esp
-    push ebp                ;Saving ebp
     mov ecx, 0              ;Initialise ecx
     mov ebx, 0              ;Initialise ebx
+    mov esp, 0              ;Initialise esp
 .sigcar:
-    mov bl,byte[eax]        ;Move a byte from eax
-    
+    mov bl, byte[edi+esp]   ;Move a byte from dict (K)
+    mov al, byte[edx+ecx]
+    cmp al ,bl    ;Compare to know the value number of key char
+    je .firstFound
+    jne .incre
+.incre:
+    inc esp
+    cmp byte[edi+esp], 0
+    jne .sigcar
+    je .reset
+.reset:
+    mov esp, 0
+    jmp .sigcar
+.firstFound:
+    mov bl, byte[edi+ebx]    ;Move a byte from edi (X)
+    cmp byte[eax], bl
+    je .secondFound
+    jne .increb
+.increb:
+    inc ebx
+    cmp byte[edi+ebx], 0
+    jne .sigcar
+    je .reset
+
+.secondFound:
+    add ebx, esp            ;Adding both indexes 
+    mov esp, 59             ;Move 59 to esp
+    push eax                ;Save eax
+    push edx                ;Save edx
+    mov eax, ebx            ;Move sum to eax
+    idiv esp                ;Dividing to get the modulo
+    mov esp, edx            ;Move remainder to ebx
+    pop edx                 ;Restore edx
+    pop eax                 ;Restore eax
+    mov bl, byte[edi+esp]   ;We get the encrypted char
     mov byte[esi+ecx], bl   ;Saving position in memory
     cmp byte[eax], 0        ;We check if it is the end
     jz .finalizar           ;Jump to the end
     inc eax                 ;add 1 to eax
     inc ecx                 ;add 1 to ecx
+    mov ebx, 0              ;Restore ebx
+    mov esp, 0              ;Restore esp
     jmp .sigcar             ;Loop
 .finalizar:
-    pop ebp                 ;Restore ebp
     pop esp                 ;Restore esp
     pop ebx                 ;Restpre ebx
     pop ecx                 ;Restpre ecx
@@ -218,14 +252,6 @@ decrypt:
     pop ebx                 ;Restpre ebx
     pop ecx                 ;Restpre ecx
     ret                     ;Return
-
-
-LeerTexto:
-    mov ebx, stdin
-    mov eax, sys_read
-    int 0x80
-    ret
-
 
 ins_args:
     call sprintLF          ;Printing error code
