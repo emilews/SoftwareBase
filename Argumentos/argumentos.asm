@@ -1,6 +1,7 @@
 ;programa: argumentos.asm
 ;autor: Emilio Wong
 ;fecha: oct-1
+%include  'constantes.asm'
 %include  'funciones.asm'
 section .text
   global _start  ;punto de entrada usando gcc

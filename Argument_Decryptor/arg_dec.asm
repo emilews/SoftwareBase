@@ -103,9 +103,10 @@ _start:
   ;Reading character by character--------------------
   mov eax, [t_denc]         ;Move text argument to eax
   mov edx, [dict]
+  push ebp
   push esp
   mov esp, edi
-  call encrypt        ;We encrypt char by char and move to esi 
+  call decrypt        ;We encrypt char by char and move to esi 
   ;--------------------------------------------------
 
 i_a_handler:
@@ -115,7 +116,7 @@ i_a_handler:
 ;--------------------------------------------------------------------
 ;--------------------------------------------------------------------
 ;Works with eax (which is the index where we search) and edx (the key index)
-encrypt:
+decrypt:
   mov ecx, 0              ;Initialise ecx
   mov ebx, 0              ;Initialise ebx
   mov edi, 0              ;Initialise edi
@@ -147,12 +148,12 @@ encrypt:
   inc ebp
   jmp .firstFound
 .secondFound:
-  add edi, ebp
+  sub edi, ebp
   mov ebp, 0
   pop ebp
   mov bl, byte[edx+edi]     ;We get the encrypted char
   mov byte[esi+ebp], bl     ;Saving position in memory
-  cmp byte[eax+ebp], 0x0    ;We check if it is the end
+  cmp byte[eax+ebp], 0    ;We check if it is the end
   jz .finalizar           ;Jump to the end
   inc eax                   ;add 1 to eax
   inc ecx                   ;add 1 to ecx
@@ -181,24 +182,18 @@ encrypt:
   mov eax, 0
   mov eax, sys_write  ;Write mode
   mov ecx, esi        ;What will be written in the file
-  mov edx, td_len     ;The bytes that will be written
+  mov edx, esi     ;The bytes that will be written
   int 80h             ;Execute
   mov eax, sys_sync   ;Sync
   int 80h             ;Execute
   mov eax,6           ;close file
   int 80h             ;close your file
   ;Printing in terminal-------------------------------
-  mov eax, 0
-  mov ebx, 0
-  mov ecx, 0
-  mov edx, 0
-  mov edi, 0
-  mov eax, key          ;Moving whole encrypted text to eax
+  mov eax, [esi]        ;Moving whole encrypted text to eax
   call sprintLF         ;Printing
   ;---------------------------------------------------
   mov eax, sys_exit   ;Exit code
   int 80h             ;Execute/quit
-
 ins_args:
   call sprintLF          ;Printing error code
   call quit              ;Quitting
