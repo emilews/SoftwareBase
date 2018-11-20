@@ -83,10 +83,12 @@ _start:
   ;--------------------------------------------------
 
   ;GENERAL: 
-  ;1.- It will read only one line in the cifrado txt file
-  ;     and it will look for a number, that number is the 
-  ;     position in that line of the encrypted/decrypted
-  ;     character. 
+  ;   It will read the whole cifrado.txt file, first
+  ;     looping through the lines to get the key char
+  ;     line and then looping through the first line
+  ;     to get the position of the char of the text
+  ;     to encrypt/decrypt
+  ; THIS IS NO LONGER USED----------------------------
   ;   It is doing the following calculations to get that
   ;   number:
   ;     e(x) = (x + k)%59  -> Encryption
@@ -96,10 +98,10 @@ _start:
   ;   k is the number value of the character of the key
   ;   mod(59) is the modulo of the total of characters
   ;   in the cifrado line, which is 59
-  ;   
+  ;
   ;   The number values are based on the position of that
   ;   same character on the line at the cifrado txt
-
+  ;---------------------------------------------------
   ;Reading character by character--------------------
   mov eax, [t_denc]         ;Move text argument to eax
   mov edx, [dict]           ;Move dict to edx
