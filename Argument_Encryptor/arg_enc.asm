@@ -102,10 +102,10 @@ _start:
 
   ;Reading character by character--------------------
   mov eax, [t_denc]         ;Move text argument to eax
-  mov edx, [dict]
-  push esp
-  mov esp, edi
-  call encrypt        ;We encrypt char by char and move to esi 
+  mov edx, [dict]           ;Move dict to edx
+  push esp                  ;Save esp
+  mov esp, edi              ;Move name of file to esp
+  call encrypt              ;We encrypt char by char and move to esi 
   ;--------------------------------------------------
 
 i_a_handler:
@@ -119,66 +119,66 @@ encrypt:
   mov ecx, 0              ;Initialise ecx
   mov ebx, 0              ;Initialise ebx
   mov edi, 0              ;Initialise edi
-  mov ebp, 0
+  mov ebp, 0              ;Initialise ebp
 .sigcar:
-  cmp byte[key+ecx], 0x0a
-  je .restart
+  cmp byte[key+ecx], 0x0a ;Check if it is the end of the key string
+  je .restart             ;Jump to restart index
   mov bl, byte[edx+edi]   ;Move a byte from dict (K)
   cmp byte[key+ecx], bl   ;Compare to know the value number of key char
   je .preFirstFound       ;Handler to prepare for next loop
   jne .incre              ;Handler to add 59 to edi and ret to loop
 .incre:
-  lea edi, [edi+60]
+  lea edi, [edi+60]       ;Calculate edi adding 60 to read next char
   jmp .sigcar             ;Returns to loop
 .preFirstFound:
-  mov [k_val], edi
-  push ebp 
-  mov ebp, 0
-  jmp .firstFound
-.restart:
-  mov ecx, 0
-  jmp .sigcar
+  mov [k_val], edi        ;Saving index in memory
+  push ebp                ;Saving ebp
+  mov ebp, 0              ;Initialise ebp
+  jmp .firstFound         ;next block
+.restart:                 
+  mov ecx, 0              ;Restart ecx to 0
+  jmp .sigcar             ;Loop to next char
 .firstFound:
   mov bl, byte[edx+ebp]   ;Move a byte from edi (X)
-  cmp byte[eax], bl
-  je .secondFound
-  jne .increb
-.increb:
-  inc ebp
-  jmp .firstFound
+  cmp byte[eax], bl       ;compare if it is the char we want
+  je .secondFound         ;next block
+  jne .increb             ;if not, add 1 to index
+.increb:  
+  inc ebp                 ;add 1 rto ebp
+  jmp .firstFound         ;loop again
 .secondFound:
-  add edi, ebp
-  mov ebp, 0
-  pop ebp
+  add edi, ebp              ;add edi and ebp to get encrypted char
+  mov ebp, 0                ;initialise ebp
+  pop ebp                   ;restoring ebp
   mov bl, byte[edx+edi]     ;We get the encrypted char
   mov byte[esi+ebp], bl     ;Saving position in memory
   cmp byte[eax+ebp], 0x0    ;We check if it is the end
-  jz .finalizar           ;Jump to the end
+  jz .finalizar             ;Jump to the end
   inc eax                   ;add 1 to eax
   inc ecx                   ;add 1 to ecx
-  inc ebp
+  inc ebp                   ;add 1 to ebp
   mov ebx, 0                ;Restore ebx
-  mov edi, 0
-  mov bl, 0
+  mov edi, 0                ;restore edi
+  mov bl, 0                 ;restore bl
   jmp .sigcar               ;Loop
 .finalizar:
-  mov eax, 0
-  mov ebx, 0
-  mov ecx, 0
-  mov edx, 0
+  mov eax, 0          ;restore eax
+  mov ebx, 0          ;restore ebx
+  mov ecx, 0          ;restore ecx
+  mov edx, 0          ;restore edx
   mov eax, sys_creat  ;Create a file
   mov ebx, esp        ;Name of the file
   mov ecx, 664O       ;O character?
   int 80h             ;Execute
-  mov eax, 0
+  mov eax, 0          ;initialise eax
   mov eax, sys_open   ;Open file
   mov ebx, esp        ;Name of the file to open
   mov ecx, O_RDWR     ;Read/Write mode
   int 80h             ;Execute
-  pop ebp
-  pop esp
+  pop ebp             ;restore ebp
+  pop esp             ;restore esp
   mov ebx, eax        ;From eax, we use the opened file
-  mov eax, 0
+  mov eax, 0          ;initialise eax
   mov eax, sys_write  ;Write mode
   mov ecx, esi        ;What will be written in the file
   mov edx, td_len     ;The bytes that will be written
@@ -188,13 +188,13 @@ encrypt:
   mov eax,6           ;close file
   int 80h             ;close your file
   ;Printing in terminal-------------------------------
-  mov eax, 0
-  mov ebx, 0
-  mov ecx, 0
-  mov edx, 0
-  mov edi, 0
-  mov eax, key          ;Moving whole encrypted text to eax
-  call sprintLF         ;Printing
+  mov eax, 0          ;restore eax
+  mov ebx, 0          ;restore ebx
+  mov ecx, 0          ;restore ecx
+  mov edx, 0          ;restore edx
+  mov edi, 0          ;restore edi
+  mov eax, key        ;Moving whole encrypted text to eax
+  call sprintLF       ;Printing
   ;---------------------------------------------------
   mov eax, sys_exit   ;Exit code
   int 80h             ;Execute/quit
