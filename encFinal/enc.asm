@@ -205,7 +205,7 @@ encrypt:
   mov ebx, eax              ;From eax, we use the opened file
   mov eax, sys_write        ;Write mode
   mov ecx, esi              ;What will be written in the file
-  mov edx, [x_val]              ;The bytes that will be written
+  mov edx, [x_val]          ;The bytes that will be written
   int 80h                   ;Execute
   mov eax, sys_sync         ;Sync
   int 80h                   ;Execute
