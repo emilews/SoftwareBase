@@ -2,7 +2,7 @@
 ; Authors: Aileen Palafox, Luis Valdez & Emilio Wong
 ; Date: 14 Nov 2018
 ; How to:
-; ./encryptor "texto a cifrar" "archivo_para_guardar.txt"
+; ./encryptor "texto a cifrar" archivo_para_guardar.txt
 
 %include 'constantes.asm'
 %include 'funciones.asm'
@@ -15,8 +15,7 @@ section .data
   i_a_msg   DB   'Not enough arguments. Use as follows: ./arg_enc "text to encrypt" "file to save"', 0x0
   ;File name of the dictionary
   cifrado   DB   'cifrado.txt',0x0
-  ;Test key
-  t_key   DB   'hola',0x0
+
 
 section .bss
   k_val     resb 1          ;Key number value
@@ -195,7 +194,7 @@ encrypt:
   mov ecx, 0          ;restore ecx
   mov edx, 0          ;restore edx
   mov edi, 0          ;restore edi
-  mov eax, key        ;Moving whole encrypted text to eax
+  mov eax, esi        ;Moving whole encrypted text to eax
   call sprintLF       ;Printing
   ;---------------------------------------------------
   mov eax, sys_exit   ;Exit code

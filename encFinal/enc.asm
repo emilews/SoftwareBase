@@ -24,9 +24,8 @@ section .bss
   x_val         resb 1          ;Char to enc/dec number val
   dict          resb 3538       ;For the dict 
   desc          resb 4          ;memory for storing desc
-  buffer        resb 3538       ;Buffer for reading
+  buffer        resb 3539       ;Buffer for reading cifrado.xt
   b_len         equ  $-buffer   ;length of buffer
-  file          resb 1024       ;File x
   filename      resb $-buffer   ;filename where we save data
   key           resb 32         ;Key to encrypt/decrypt
   key_len       equ  $-key      ;Key length
@@ -189,24 +188,24 @@ encrypt:
   mov bl, 0                 ;Cleaning bl
   jmp .sigcar               ;Back to loop
 .finalizar:
-  mov [x_val], eax          ;Move the amount of bytes the text has to x_val
+  mov eax, esi              ;Move the amount of bytes the text has to x_val
+  call strlen               ;Calling strlen to know the length of the encrypted string
+  mov [x_val], eax          ;Move length of encrypted string to x_val
   pop eax                   ;Some argument that was pushed but I don't know where
   pop ebp                   ;Restore ebp
   pop edi                   ;Restore edi (name of file to create and write to)
   mov eax, sys_creat        ;Create a file
   mov ebx, edi              ;Name of the file
-  ;mov ecx, 664O            ;O character?
+  mov ecx, 664O             ;O character?
   int 80h                   ;Execute
-  mov eax, 0                ;Clean eax
   mov eax, sys_open         ;Open file
   mov ebx, edi              ;Name of the file to open
   mov ecx, O_RDWR           ;Read/Write mode
   int 80h                   ;Execute
   mov ebx, eax              ;From eax, we use the opened file
-  mov eax, 0                ;Clean eax
   mov eax, sys_write        ;Write mode
   mov ecx, esi              ;What will be written in the file
-  mov edx, x_val            ;The bytes that will be written
+  mov edx, [x_val]              ;The bytes that will be written
   int 80h                   ;Execute
   mov eax, sys_sync         ;Sync
   int 80h                   ;Execute
