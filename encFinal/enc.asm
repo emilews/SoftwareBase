@@ -55,6 +55,7 @@ _start:
   ;--------------------------------------------------
 
   ;Reading cifrado file------------------------------
+  ;To have the whole alphabet in memory
   mov eax,5           ;open file command
   mov ebx, cifrado    ;What we want to open
   mov ecx,0           ;read only

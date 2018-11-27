@@ -2,7 +2,7 @@
 ; Authors: Aileen Palafox, Luis Valdez & Emilio Wong
 ; Date: 14 Nov 2018
 ; How to:
-; ./dec "texto a decifrar" "archivo_para_guardar.txt"
+; ./dec "Text to decrypt" "file_to_save.txt"
 
 %include 'constantes.asm'
 %include 'funciones.asm'
@@ -20,19 +20,17 @@ section .data
 
 
 section .bss
-  k_val     resb 1          ;Key number value
-  x_val     resb 1          ;Char to enc/dec number val
-  dict      resb 3539       ;For the dict 
-  desc      resb 4          ;memory for storing desc
-  buffer    resb 3539       ;Buffer for reading
-  b_len     equ  $-buffer   ;length of buffer
-  ;Arguments in order--------------------------------
+  k_val         resb 1          ;Key number value
+  x_val         resb 1          ;Char to enc/dec number val
+  dict          resb 3539       ;For the dict 
+  desc          resb 4          ;memory for storing desc
+  buffer        resb 3539       ;Buffer for reading
+  b_len         equ  $-buffer   ;length of buffer
   filename      resb $-buffer   ;filename where we save data
-  key           resb 32         ;Key to encrypt/decrypt
-  key_len       equ  $-key
+  key           resb 32         ;Key to decrypt
+  key_len       equ  $-key      ;Kye length
   text          resb 8192       ;where we save the text
-  t_len         equ  $-text
-  ;--------------------------------------------------
+  t_len         equ  $-text     ;Text length
 
 section .start
   global _start
@@ -40,12 +38,14 @@ section .start
 
 _start:
   ;Counting arguments--------------------------------
+  ;This is to know if there are enough arguments or too many
   pop eax             ;Number of arguments
   cmp eax, 3          ;We compare the arguments with 3
   jl i_a_handler      ;Call to terminate if not enough args 
   jg tm_a_handler     ;Call to terminate if too much arguments
   ;--------------------------------------------------
   ;Asking for key------------------------------------
+  ;We ask for the key to encrypt the argument
   mov eax, key_msg    ;Move msg to eax
   call sprint         ;Print msg
   mov ecx, key        ;Where we'll save input
@@ -55,15 +55,13 @@ _start:
   int 80h             ;Execute
   ;--------------------------------------------------
 
-
   ;Reading cifrado file------------------------------
+  ;To have the whole alphabet in memory
   mov eax,5           ;open file command
-  mov ebx, cifrado
+  mov ebx, cifrado    ;What we want to open
   mov ecx,0           ;read only
   int 80h             ;open filename for read only
-
   mov [desc],eax      ;storing the desc
-
   mov eax,3           ;read from file
   mov ebx,[desc]      ;your file desc
   mov ecx,buffer      ;read to buffer
@@ -75,14 +73,16 @@ _start:
   ;--------------------------------------------------
 
 
-  ;Initializer---------------------------------------
+  ;Initialiser---------------------------------------
+  ;Poping arguments and saving them
   pop eax             ;Name of program
   pop eax             ;Argument or text to encrypt
-  mov [text], eax   ;We move the text to text
+  mov [text], eax     ;We move the text to text
   pop eax             ;Name of file to save data onto
   mov edi, eax        ;Move name of new file to edi
   mov esi, filename   ;Data address
-  
+  ;--------------------------------------------------
+
   ;------------------------------------------------------
   ;THE FOLLOWING WAS NOT USED, IT WAS THE FIRST METHOD 
   ;THAT WE TESTED, IT REALLY DIDN'T WORK FOR MANY 
@@ -137,8 +137,8 @@ tm_a_handler:
 ;coincidence,then looks for a coincidence with a char 
 ;of dict on the first line and saves the index 
 ;(which is an integer and not a register pointer),
-;it then proceeds to add the two indexes to get the
-;encrypted or shifted char and copies it to esi.
+;it then proceeds to substract the two indexes to get the
+;decrypted or shifted char and copies it to esi.
 ;When we get to the end of the key, we restart the
 ;index to 0.
 ;When we get to the end of the text, we break out of 
