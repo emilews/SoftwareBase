@@ -2,7 +2,7 @@
 ; Authors: Aileen Palafox, Luis Valdez & Emilio Wong
 ; Date: 14 Nov 2018
 ; How to:
-; ./enc "texto a cifrar" "archivo_para_guardar.txt"
+; ./enc "Text to encrypt" "file_to_save.txt"
 
 %include 'constantes.asm'
 %include 'funciones.asm'
